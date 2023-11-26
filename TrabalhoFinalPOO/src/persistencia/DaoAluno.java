@@ -23,6 +23,7 @@ public class DaoAluno extends Dao {
                 Aluno p = new Aluno();
                 p.setIdAluno(rs.getInt("idAluno"));
                 p.setNome(rs.getString("nome"));
+                p.setRa(rs.getString("ra"));
                 p.setCpf(rs.getString("cpf"));
 
                 if (rs.getObject("idEndereco", Integer.class) != null) {
@@ -51,6 +52,7 @@ public class DaoAluno extends Dao {
                 cl = new Aluno();
                 cl.setIdAluno(rs.getInt("idAluno"));
                 cl.setNome(rs.getString("nome"));
+                cl.setRa(rs.getString("ra"));
                 cl.setCpf(rs.getString("cpf"));
 
                 if (rs.getObject("idEndereco", Integer.class) != null) {
@@ -69,23 +71,25 @@ public class DaoAluno extends Dao {
 
     public boolean salvar(Aluno aluno) {
         try {
-            String sql = "INSERT INTO aluno(\n"
-                    + " idAluno, nome, cpf, idEndereco)\n"
-                    + " VALUES (?, ?, ?, ?)";
+            String sql = """
+                         INSERT INTO aluno(
+                         idAluno, nome, ra, cpf, idEndereco)
+                         VALUES (?, ?, ?, ?, ?)""";
 
             PreparedStatement ps = criarPreparedStatement(sql);
             aluno.setIdAluno(gerarProximoId("aluno","idAluno"));
             ps.setInt(1, aluno.getIdAluno());
             ps.setString(2, aluno.getNome());
-            ps.setString(3, aluno.getCpf());
+            ps.setString(3, aluno.getRa());
+            ps.setString(4, aluno.getCpf());
 
             if (aluno.getEndereco() != null) {
                 if (aluno.getEndereco().getIdEndereco() == null || aluno.getEndereco().getIdEndereco() == 0) {
                     daoEndereco.salvar(aluno.getEndereco());
                 }
-                ps.setInt(4, aluno.getEndereco().getIdEndereco());
+                ps.setInt(5, aluno.getEndereco().getIdEndereco());
             } else {
-                ps.setObject(4, null);
+                ps.setObject(5, null);
             }
             ps.executeUpdate();
             return true;
@@ -102,13 +106,15 @@ public class DaoAluno extends Dao {
 
     public boolean atualizar(Aluno aluno) {
         try {
-            String sql = "UPDATE aluno\n"
-                    + "SET nome=?, cpf=?, tel=?, idEndereco=? \n"
-                    + " WHERE idAluno= " + aluno.getIdAluno();
+            String sql = """
+                         UPDATE aluno
+                         SET nome=?,ra= ?, cpf=?, tel=?, idEndereco=? 
+                         WHERE idAluno= """ + aluno.getIdAluno();
 
             PreparedStatement ps = criarPreparedStatement(sql);
             ps.setString(1, aluno.getNome());
-            ps.setString(2, aluno.getCpf());
+            ps.setString(2, aluno.getRa());
+            ps.setString(3, aluno.getCpf());
             
             if (aluno.getEndereco() != null) {
                 if (aluno.getEndereco().getIdEndereco() == null) {
@@ -116,9 +122,9 @@ public class DaoAluno extends Dao {
                 } else {
                     daoEndereco.atualizar(aluno.getEndereco());
                 }
-                ps.setInt(3, aluno.getEndereco().getIdEndereco());
+                ps.setInt(4, aluno.getEndereco().getIdEndereco());
             } else {
-                ps.setObject(3, null);
+                ps.setObject(4, null);
             }
 
             ps.executeUpdate();

@@ -5,6 +5,14 @@ import java.util.ArrayList;
 import modelo.Curso;
 
 public class DaoCurso extends Dao{
+    private DaoEndereco daoEndereco;
+    private DaoDocente daoDocente;
+    
+    public DaoCurso() {
+        daoDocente = new DaoDocente();
+        
+    }
+    
     ArrayList<Curso> cursos = new ArrayList<>();
     public ArrayList<Curso> carregarCursos(Curso cu) {
         try {
@@ -13,9 +21,24 @@ public class DaoCurso extends Dao{
             while (rs.next()) {
                 cu.setIdCurso(rs.getInt("idCurso"));
                 cu.setNome(rs.getString("nome"));
-                cu.setCargaHoraria(rs.getString("cargaHoraria"));
-                cu.setQtdSemestres(rs.getString("qtdSemestres"));
-
+                cu.setCargaHoraria(rs.getInt("cargaHoraria"));
+                cu.setQtdSemestres(rs.getInt("qtdSemestres"));
+                
+                if (rs.getObject("idFuncionario", Integer.class) != null) {
+                   cu.getCoordenador().setIdFuncionario(rs.getInt("idFuncionario"));
+                   cu.getCoordenador().setNome(rs.getString("nome"));
+                   cu.getCoordenador().setFormacao(rs.getString("formacao"));
+                   cu.getCoordenador().setCtps(rs.getString("ctps"));
+                   cu.getCoordenador().setCpf(rs.getString("cpf"));
+                   cu.getCoordenador().setDataNascimento(rs.getLocalDate("dataNascimento"));
+                   cu.getCoordenador().setEmail(rs.getString("email"));
+                   cu.getCoordenador().setGenero(rs.getString("genero"));
+                   cu.getCoordenador().setSalario(rs.getDouble("salario"));
+                   cu.getCoordenador().getEndereco().setIdEndereco(rs.getInt("idEndereco"));
+                   cu.getCoordenador().getEndereco().setCidade(rs.getString("cidade"));
+                   cu.getCoordenador().getEndereco().setRua(rs.getString("rua"));
+                   cu.getCoordenador().getEndereco().setNumero(rs.getString("numero"));
+                }
                 cursos.add(cu);
             }
         } catch (SQLException ex) {
@@ -33,8 +56,24 @@ public class DaoCurso extends Dao{
                 cu = new Curso();
                 cu.setIdCurso(rs.getInt("idCurso"));
                 cu.setNome(rs.getString("nome"));
-                cu.setCargaHoraria(rs.getString("cargaHoraria"));
-                cu.setQtdSemestres(rs.getString("qtdSemestres"));
+                cu.setCargaHoraria(rs.getInt("cargaHoraria"));
+                cu.setQtdSemestres(rs.getInt("qtdSemestres"));
+                
+                if (rs.getObject("idFuncionario", Integer.class) != null) {
+                   cu.getCoordenador().setIdFuncionario(rs.getInt("idFuncionario"));
+                   cu.getCoordenador().setNome(rs.getString("nome"));
+                   cu.getCoordenador().setFormacao(rs.getString("formacao"));
+                   cu.getCoordenador().setCtps(rs.getString("ctps"));
+                   cu.getCoordenador().setCpf(rs.getString("cpf"));
+                   cu.getCoordenador().setDataNascimento(rs.getLocalDate("dataNascimento"));
+                   cu.getCoordenador().setEmail(rs.getString("email"));
+                   cu.getCoordenador().setGenero(rs.getString("genero"));
+                   cu.getCoordenador().setSalario(rs.getDouble("salario"));
+                   cu.getCoordenador().getEndereco().setIdEndereco(rs.getInt("idEndereco"));
+                   cu.getCoordenador().getEndereco().setCidade(rs.getString("cidade"));
+                   cu.getCoordenador().getEndereco().setRua(rs.getString("rua"));
+                   cu.getCoordenador().getEndereco().setNumero(rs.getString("numero"));
+                }
             }
         } catch (SQLException ex) {
             System.out.println("Falha ao carregar cuereço!\n" + ex.getMessage());
@@ -53,8 +92,17 @@ public class DaoCurso extends Dao{
             cu.setIdCurso(gerarProximoId("curso", "idCurso"));
             ps.setInt(1, cu.getIdCurso());
             ps.setString(2, cu.getNome());
-            ps.setString(3, cu.getCargaHoraria());
-            ps.setString(4, cu.getQtdSemestres());
+            ps.setInt(3, cu.getCargaHoraria());
+            ps.setInt(4, cu.getQtdSemestres());
+            
+            if (cu.getCoordenador().getEndereco() != null) {
+                if (cu.getCoordenador().getEndereco().getIdEndereco() == null || cu.getCoordenador().getEndereco().getIdEndereco() == 0) {
+                    daoEndereco.salvar(cu.getCoordenador().getEndereco());
+                }
+                ps.setInt(5, cu.getCoordenador().getEndereco().getIdEndereco());
+            } else {
+                ps.setObject(5, null);
+            }
 
             ps.executeUpdate();
             return true;
@@ -73,8 +121,8 @@ public class DaoCurso extends Dao{
 
             PreparedStatement ps = criarPreparedStatement(sql);
             ps.setString(1, cu.getNome());
-            ps.setString(2, cu.getCargaHoraria());
-            ps.setString(3, cu.getQtdSemestres());
+            ps.setInt(2, cu.getCargaHoraria());
+            ps.setInt(3, cu.getQtdSemestres());
 
             ps.executeUpdate();
             return true;
