@@ -3,16 +3,32 @@ package modelo;
 import java.time.LocalDate;
 
 public class Funcionario extends Pessoa{
+    protected Integer idFuncionario;
     protected String ctps;
     protected double salario;
 
     public Funcionario() {
     }
 
-    public Funcionario(String ctps, double salario, String nome, String cpf, String email, String genero, LocalDate dataNascimento, Endereco endereco) {
-        super(nome, cpf, email, genero, dataNascimento, endereco);
+    public Funcionario(Integer idFuncionario, String ctps, double salario) {
+        this.idFuncionario = idFuncionario;
         this.ctps = ctps;
         this.salario = salario;
+    }
+
+    public Funcionario(Integer idFuncionario, String ctps, double salario, String nome, String cpf, String email, String genero, LocalDate dataNascimento, Endereco endereco) {
+        super(nome, cpf, email, genero, dataNascimento, endereco);
+        this.idFuncionario = idFuncionario;
+        this.ctps = ctps;
+        this.salario = salario;
+    }
+
+    public Integer getIdFuncionario() {
+        return idFuncionario;
+    }
+
+    public void setIdFuncionario(Integer idFuncionario) {
+        this.idFuncionario = idFuncionario;
     }
 
     public String getCtps() {
@@ -30,6 +46,8 @@ public class Funcionario extends Pessoa{
     public void setSalario(double salario) {
         this.salario = salario;
     }
+
+    
 
     @Override
     public void exibirInformacoes(){

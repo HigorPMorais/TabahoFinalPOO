@@ -1,6 +1,7 @@
 package modelo;
 
 public class Endereco {
+    protected Integer idEndereco;
     protected String cidade;
     protected String rua;
     protected String numero;
@@ -8,10 +9,19 @@ public class Endereco {
     public Endereco() {
     }
 
-    public Endereco(String cidade, String rua, String numero) {
+    public Endereco(Integer idEndereco, String cidade, String rua, String numero) {
+        this.idEndereco = idEndereco;
         this.cidade = cidade;
         this.rua = rua;
         this.numero = numero;
+    }
+
+    public Integer getIdEndereco() {
+        return idEndereco;
+    }
+
+    public void setIdEndereco(Integer idEndereco) {
+        this.idEndereco = idEndereco;
     }
 
     public String getCidade() {
@@ -37,6 +47,8 @@ public class Endereco {
     public void setNumero(String numero) {
         this.numero = numero;
     }
+
+    
 
     @Override
     public String toString() {
